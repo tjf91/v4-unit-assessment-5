@@ -1,4 +1,7 @@
 require('dotenv').config();
+const massive = require('massive')
+const session = require('express-session')
+const {CONNECTION_STRING,SESSION_SECRET,SERVER_PORT} =process.env
 const express = require('express'),
       userCtrl = require('./controllers/user'),
       postCtrl = require('./controllers/posts')
@@ -7,8 +10,22 @@ const express = require('express'),
 const app = express();
 
 app.use(express.json());
+app.use(session({
+    resave:false,
+    saveUninitialized:true,
+    secret:SESSION_SECRET,
+    cookie:{maxAge:1000*60*60*24*7}
+}))
 
-//Auth Endpoints
+massive({
+    connectionString:CONNECTION_STRING,
+    ssl:{rejectUnauthorized:false}
+}).then(dbInstance=>{
+    app.set('db',dbInstance)
+    console.log("db connected")
+    })
+
+// Auth Endpoints
 app.post('/api/auth/register', userCtrl.register);
 app.post('/api/auth/login', userCtrl.login);
 app.get('/api/auth/me', userCtrl.getUser);
@@ -20,4 +37,4 @@ app.post('/api/post', postCtrl.createPost);
 app.get('/api/post/:id', postCtrl.readPost);
 app.delete('/api/post/:id', postCtrl.deletePost)
 
-app.listen(4000, _ => console.log(`running on ${4000}`));
+app.listen(SERVER_PORT, () => console.log(`running on ${SERVER_PORT}`));

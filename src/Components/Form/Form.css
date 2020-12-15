@@ -43,3 +43,9 @@
     font-family: 'Open Sans','Courier New', Courier, monospace;
     font-size: 12px;
   }
+  @media (max-width: 600px){
+    .form {
+      background-color: pink;
+      text-align: center;
+    }
+  }
