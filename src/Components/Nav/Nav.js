@@ -19,12 +19,12 @@ class Nav extends Component {
     this.getUser = this.getUser.bind(this);
   }
 
-  componentDidMount() {    
+  componentWillUnmount() {    
     this.getUser()
   }
 
   getUser() {
-    axios.get('https://localhost:4000/api/auth/me')
+    axios.get('/api/auth/me')
     .then(res => {    
       console.log(res.data)  
       this.props.updateUser(res.data)})
@@ -65,4 +65,4 @@ function mapStateToProps(reduxState){
 }
 
 //**************************************************************************************Check this if routing doesn't work
-export default  withRouter(connect(mapStateToProps,{updateUser})(Nav)); 
+export default  withRouter(connect(mapStateToProps,{updateUser,logout})(Nav)); 
